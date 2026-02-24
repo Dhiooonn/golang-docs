@@ -6,6 +6,7 @@ import (
 	"github.com/dhion/rest-api-go/internal/handler"
 	"github.com/dhion/rest-api-go/internal/repository"
 	"github.com/dhion/rest-api-go/internal/service"
+	"github.com/dhion/rest-api-go/internal/middleware"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 	// Auth routes
 	r.POST("/register", userHandler.Register)
 	r.POST("/login", userHandler.Login)
+	r.GET("/profile", middleware.JWTAuthMiddleware(), userHandler.Profile)
 
 	r.Run(":8080")
 }

@@ -5,6 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/dhion/rest-api-go/internal/utils"
+
 	"github.com/dhion/rest-api-go/internal/model"
 	"github.com/dhion/rest-api-go/internal/repository"
 )
@@ -38,17 +40,22 @@ func (s *UserService) Register(req model.RegisterRequest) (model.User, error) {
 	return s.repo.Create(user), nil
 }
 
-func (s *UserService) Login(req model.LoginRequest) (model.User, error) {
+func (s *UserService) Login(req model.LoginRequest) (string, error) {
+
 	user, found := s.repo.GetByEmail(req.Email)
 	if !found {
-		return model.User{}, errors.New("email tidak ditemukan")
+		return "", errors.New("email tidak ditemukan")
 	}
 
-	// Compare password
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return model.User{}, errors.New("password salah")
+		return "", errors.New("password salah")
 	}
 
-	return user, nil
+	token, err := utils.GenerateToken(user.ID, user.Email)
+	if err != nil {
+		return "", errors.New("gagal generate token")
+	}
+
+	return token, nil
 }

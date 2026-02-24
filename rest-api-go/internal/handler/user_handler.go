@@ -41,7 +41,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.service.Login(req)
+	token, err := h.service.Login(req)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
@@ -49,10 +49,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "login berhasil",
-		"user": gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
-		},
+		"token":   token,
+	})
+}
+
+func (h *UserHandler) Profile(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ini endpoint yang dilindungi JWT 🔒",
 	})
 }
