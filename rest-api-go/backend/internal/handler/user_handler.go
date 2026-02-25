@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/dhion/rest-api-go/internal/model"
 	"github.com/dhion/rest-api-go/internal/service"
+	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
@@ -54,7 +54,13 @@ func (h *UserHandler) Login(c *gin.Context) {
 }
 
 func (h *UserHandler) Profile(c *gin.Context) {
+
+	userID, _ := c.Get("user_id")
+	email, _ := c.Get("email")
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "ini endpoint yang dilindungi JWT 🔒",
+		"message": "ini profile user login",
+		"user_id": userID,
+		"email":   email,
 	})
 }

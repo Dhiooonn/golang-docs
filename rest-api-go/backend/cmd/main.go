@@ -1,16 +1,19 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/dhion/rest-api-go/internal/handler"
+	"github.com/dhion/rest-api-go/internal/middleware"
 	"github.com/dhion/rest-api-go/internal/repository"
 	"github.com/dhion/rest-api-go/internal/service"
-	"github.com/dhion/rest-api-go/internal/middleware"
 )
 
 func main() {
 	r := gin.Default()
+
+	r.Use(cors.Default())
 
 	// Dependency Injection
 	repo := repository.NewInMemoryUserRepository()

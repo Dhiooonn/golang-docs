@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dhion/rest-api-go/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/dhion/rest-api-go/internal/utils"
 )
 
 func JWTAuthMiddleware() gin.HandlerFunc {
-	return  func(c *gin.Context) {
+	return func(c *gin.Context) {
+
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "token tidak ditemukan"})
@@ -28,6 +29,13 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "token tidak valid"})
 			c.Abort()
 			return
+		}
+
+		// Ambil claims
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if ok {
+			c.Set("user_id", claims["user_id"])
+			c.Set("email", claims["email"])
 		}
 
 		c.Next()
